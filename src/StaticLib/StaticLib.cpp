@@ -69,19 +69,126 @@ bool add(tree* t, int key, const char* value)
 	}
 
 	// Todo: t->rootの下にkeyの値の大小でleftかrightを切り替えながらpを追加する処理を実装する
+	node* n = t->root;
+	while (1)
+	{
+		if (key > n->key) 
+		{
+			if (n->right == NULL) 
+			{
+				n->right = p;
+				break;
+			}
+			else 
+			{
+				n = n->right;
+			}
+		}
+		else if (key < n->key) 
+		{
+			if (n->left == NULL) 
+			{
+				n->left = p;
+				break;
+			}
+			else 
+			{
+				n = n->left;
+			}
+		}
+		else if (key == n->key) 
+		{
+			for (int i = 0; i < 256; i++) 
+			{
+				n->value[i] = p->value[i];
+			}
 
-	return true;
+			free(p);
+			break;
+		}
+	}
+		return true;
 }
 
 // keyの値を見てノードを検索して、値を取得する
 const char* find(const tree* t, int key)
 {
-	// ToDo: 実装する
-	return NULL;
+	if (t == NULL) return NULL;
+	if (t->root == NULL) return NULL;
+
+	node* n;
+
+	n = t->root;
+
+	while (1) 
+	{
+		if (key > n->key) 
+		{
+			if (n->right == NULL) return NULL;
+			
+			n = n->right;
+		}
+		else if (key < n->key) 
+		{
+			if (n->left == NULL) return NULL;
+
+			n = n->left;
+		}
+		else if (key == n->key) 
+		{
+			if (n->value == NULL) return NULL;
+			return n->value;
+		}
+	}
 }
 
 // keyの小さな順にコールバック関数funcを呼び出す
 void search(const tree* t, void (*func)(const node* p))
 {
 	// ToDo: 実装する
+	if (t == NULL) return;
+
+
+	node* n = t->root;
+
+	int max;
+
+	while (1) {
+
+		if (n->right != NULL) 
+		{
+			n = n->right;
+		}
+		else 
+		{
+			max = n->key;
+			break;
+		}
+	}
+
+
+	for (int i = 0; i < max + 1; i++) 
+	{
+		n = t->root;
+
+		if (find(t, i) != NULL) 
+		{
+			while (1) 
+			{
+				if (n->key < i) 
+				{
+					n = n->right;
+				}
+				else if (n->key > i) 
+				{
+					n = n->left;
+				}
+				else if (n->key == i) 
+				{
+					func(n);
+					break;
+				}
+			}
+		}
+	}
 }
